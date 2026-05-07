@@ -148,7 +148,7 @@ export default function Projects() {
           <p className="font-body text-base text-secondary leading-relaxed max-w-2xl mb-6">
             A TCG card inventory tracker with Tableau sales dashboards. Track card
             values across sets, analyze market trends, and visualize portfolio
-            performance — built to put data analysis at the center of a collecting
+            performance built to put data analysis at the center of a collecting
             hobby.
           </p>
 
