@@ -49,7 +49,7 @@ export default function Hero() {
       </div>
 
       {/* CTAs */}
-      <div className="flex flex-wrap gap-3 mb-16">
+      <div className="flex flex-wrap gap-3 mb-6">
         <Link
           href="#projects"
           className="inline-flex items-center gap-2 font-body font-medium text-sm bg-primary text-white px-5 py-3 rounded-md hover:bg-secondary transition-colors duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -79,14 +79,17 @@ export default function Hero() {
         </Link>
       </div>
 
-      {/* Stats */}
-      <div className="flex flex-wrap items-start gap-x-10 gap-y-4 pt-8 border-t border-border">
+      {/* Stat cards */}
+      <div className="flex flex-wrap gap-3">
         {stats.map((stat) => (
-          <div key={stat.label} className="flex flex-col gap-0.5">
-            <span className="font-heading text-2xl font-semibold text-primary leading-none">
+          <div
+            key={stat.label}
+            className="flex flex-col gap-0.5 border border-border bg-white px-4 py-3 rounded-lg min-w-[90px]"
+          >
+            <span className="font-heading text-lg font-semibold text-primary leading-none">
               {stat.value}
             </span>
-            <span className="font-body text-sm text-secondary">{stat.label}</span>
+            <span className="font-body text-xs text-secondary">{stat.label}</span>
           </div>
         ))}
       </div>

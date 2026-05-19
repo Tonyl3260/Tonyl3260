@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 const ynotcardTags = ["Tableau", "React", "Next.js", "JavaScript"];
+const airbnbTags = ["Tableau", "Data Visualization", "Public Dataset"];
 
 function DashboardPlaceholder() {
   return (
@@ -113,6 +114,116 @@ function DashboardPlaceholder() {
   );
 }
 
+function AirbnbPlaceholder() {
+  return (
+    <svg
+      viewBox="0 0 800 450"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full"
+      role="img"
+      aria-label="Toronto Airbnb dashboard — listing map and price distribution charts"
+    >
+      {/* Page background */}
+      <rect width="800" height="450" fill="#F8FAFC" />
+
+      {/* Top nav bar */}
+      <rect width="800" height="48" fill="#FFFFFF" />
+      <rect x="20" y="16" width="100" height="14" rx="3" fill="#18181B" />
+      <rect x="640" y="15" width="72" height="16" rx="8" fill="#FF385C" fillOpacity="0.15" />
+      <rect x="656" y="21" width="40" height="6" rx="2" fill="#FF385C" />
+      <line x1="0" y1="48" x2="800" y2="48" stroke="#E4E4E7" />
+
+      {/* Filter bar */}
+      <rect x="184" y="60" width="596" height="32" rx="6" fill="#FFFFFF" stroke="#E4E4E7" />
+      <rect x="200" y="70" width="52" height="8" rx="2" fill="#94A3B8" />
+      <line x1="268" y1="60" x2="268" y2="92" stroke="#E4E4E7" />
+      <rect x="280" y="70" width="60" height="8" rx="2" fill="#94A3B8" />
+      <line x1="356" y1="60" x2="356" y2="92" stroke="#E4E4E7" />
+      <rect x="368" y="70" width="48" height="8" rx="2" fill="#94A3B8" />
+
+      {/* Left sidebar */}
+      <rect x="0" y="48" width="164" height="402" fill="#FFFFFF" />
+      <line x1="164" y1="48" x2="164" y2="450" stroke="#E4E4E7" />
+      <rect x="16" y="72" width="100" height="9" rx="3" fill="#94A3B8" />
+      <rect x="16" y="94" width="132" height="10" rx="3" fill="#FF385C" fillOpacity="0.12" />
+      <rect x="24" y="94" width="4" height="10" rx="1" fill="#FF385C" />
+      <rect x="16" y="116" width="120" height="10" rx="3" fill="#E4E4E7" />
+      <rect x="16" y="138" width="110" height="10" rx="3" fill="#E4E4E7" />
+      <rect x="16" y="198" width="100" height="9" rx="3" fill="#94A3B8" />
+      <rect x="16" y="218" width="114" height="10" rx="3" fill="#E4E4E7" />
+      <rect x="16" y="240" width="96" height="10" rx="3" fill="#E4E4E7" />
+
+      {/* KPI row */}
+      <rect x="184" y="104" width="140" height="62" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
+      <rect x="200" y="118" width="56" height="7" rx="2" fill="#94A3B8" />
+      <rect x="200" y="132" width="68" height="16" rx="3" fill="#18181B" />
+      <rect x="200" y="152" width="44" height="6" rx="2" fill="#22C55E" fillOpacity="0.7" />
+
+      <rect x="336" y="104" width="140" height="62" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
+      <rect x="352" y="118" width="56" height="7" rx="2" fill="#94A3B8" />
+      <rect x="352" y="132" width="60" height="16" rx="3" fill="#FF385C" fillOpacity="0.8" />
+      <rect x="352" y="152" width="52" height="6" rx="2" fill="#94A3B8" />
+
+      <rect x="488" y="104" width="140" height="62" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
+      <rect x="504" y="118" width="56" height="7" rx="2" fill="#94A3B8" />
+      <rect x="504" y="132" width="76" height="16" rx="3" fill="#18181B" />
+      <rect x="504" y="152" width="40" height="6" rx="2" fill="#94A3B8" />
+
+      {/* Map card */}
+      <rect x="184" y="178" width="290" height="200" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
+      <rect x="200" y="194" width="80" height="9" rx="3" fill="#3F3F46" />
+      {/* Map background */}
+      <rect x="196" y="210" width="262" height="158" rx="4" fill="#EFF6FF" />
+      {/* Streets */}
+      <line x1="230" y1="210" x2="230" y2="368" stroke="#DBEAFE" strokeWidth="2" />
+      <line x1="280" y1="210" x2="280" y2="368" stroke="#DBEAFE" strokeWidth="2" />
+      <line x1="330" y1="210" x2="330" y2="368" stroke="#DBEAFE" strokeWidth="2" />
+      <line x1="380" y1="210" x2="380" y2="368" stroke="#DBEAFE" strokeWidth="2" />
+      <line x1="196" y1="250" x2="458" y2="250" stroke="#DBEAFE" strokeWidth="2" />
+      <line x1="196" y1="300" x2="458" y2="300" stroke="#DBEAFE" strokeWidth="2" />
+      <line x1="196" y1="340" x2="458" y2="340" stroke="#DBEAFE" strokeWidth="2" />
+      {/* Listing dots */}
+      <circle cx="245" cy="232" r="4" fill="#FF385C" fillOpacity="0.8" />
+      <circle cx="310" cy="268" r="5" fill="#FF385C" />
+      <circle cx="260" cy="315" r="3.5" fill="#FF385C" fillOpacity="0.6" />
+      <circle cx="355" cy="228" r="4" fill="#FF385C" fillOpacity="0.9" />
+      <circle cx="395" cy="285" r="5.5" fill="#FF385C" fillOpacity="0.7" />
+      <circle cx="340" cy="348" r="3.5" fill="#FF385C" fillOpacity="0.5" />
+      <circle cx="220" cy="355" r="4" fill="#FF385C" fillOpacity="0.65" />
+      <circle cx="415" cy="240" r="3" fill="#FF385C" fillOpacity="0.55" />
+      <circle cx="290" cy="330" r="4.5" fill="#FF385C" fillOpacity="0.75" />
+
+      {/* Price distribution card */}
+      <rect x="486" y="178" width="294" height="200" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
+      <rect x="502" y="194" width="120" height="9" rx="3" fill="#3F3F46" />
+      {/* gridlines */}
+      <line x1="502" y1="340" x2="764" y2="340" stroke="#E4E4E7" />
+      <line x1="502" y1="310" x2="764" y2="310" stroke="#E4E4E7" strokeDasharray="3 3" />
+      <line x1="502" y1="280" x2="764" y2="280" stroke="#E4E4E7" strokeDasharray="3 3" />
+      <line x1="502" y1="250" x2="764" y2="250" stroke="#E4E4E7" strokeDasharray="3 3" />
+      {/* bars — price histogram */}
+      <rect x="512" y="316" width="28" height="24" rx="2" fill="#FF385C" fillOpacity="0.25" />
+      <rect x="550" y="292" width="28" height="48" rx="2" fill="#FF385C" fillOpacity="0.45" />
+      <rect x="588" y="256" width="28" height="84" rx="2" fill="#FF385C" fillOpacity="0.7" />
+      <rect x="626" y="268" width="28" height="72" rx="2" fill="#FF385C" fillOpacity="0.85" />
+      <rect x="664" y="284" width="28" height="56" rx="2" fill="#FF385C" fillOpacity="0.65" />
+      <rect x="702" y="304" width="28" height="36" rx="2" fill="#FF385C" fillOpacity="0.4" />
+      <rect x="740" y="322" width="18" height="18" rx="2" fill="#FF385C" fillOpacity="0.25" />
+
+      {/* Neighbourhood table */}
+      <rect x="184" y="390" width="596" height="52" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
+      <rect x="200" y="402" width="64" height="7" rx="2" fill="#94A3B8" />
+      <rect x="370" y="402" width="56" height="7" rx="2" fill="#94A3B8" />
+      <rect x="560" y="402" width="64" height="7" rx="2" fill="#94A3B8" />
+      <line x1="200" y1="416" x2="764" y2="416" stroke="#E4E4E7" />
+      <rect x="200" y="424" width="80" height="8" rx="2" fill="#3F3F46" />
+      <rect x="370" y="424" width="52" height="8" rx="2" fill="#FF385C" fillOpacity="0.7" />
+      <rect x="560" y="424" width="68" height="8" rx="2" fill="#22C55E" fillOpacity="0.7" />
+    </svg>
+  );
+}
+
 export default function Projects() {
   return (
     <section id="projects" className="px-6 py-24 max-w-4xl mx-auto">
@@ -122,7 +233,7 @@ export default function Projects() {
           Projects
         </h2>
         <span className="font-body text-xs font-medium text-secondary border border-border px-2 py-0.5 rounded-full">
-          1 live
+          2 projects
         </span>
       </div>
 
@@ -206,6 +317,59 @@ export default function Projects() {
               </svg>
               GitHub
             </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Toronto Airbnb Dashboard */}
+      <div className="rounded-xl border border-border overflow-hidden bg-white mt-6">
+        {/* Screenshot placeholder */}
+        <div className="relative border-b border-border bg-muted overflow-hidden">
+          <AirbnbPlaceholder />
+        </div>
+
+        {/* Content */}
+        <div className="p-7 sm:p-8">
+          <p className="font-body text-xs font-medium tracking-widest uppercase text-secondary mb-1.5">
+            Data Visualization
+          </p>
+          <h3 className="font-heading text-2xl font-semibold text-primary mb-4">
+            Toronto Airbnb Dashboard
+          </h3>
+          <p className="font-body text-base text-secondary leading-relaxed max-w-2xl mb-6">
+            An interactive Tableau dashboard exploring Toronto&apos;s Airbnb market using
+            the public Inside Airbnb dataset. Visualizes listing density by neighbourhood,
+            price distributions, room-type breakdowns, and availability trends to surface
+            patterns across the city.
+          </p>
+
+          {/* Tech tags */}
+          <div className="flex flex-wrap gap-2 mb-7">
+            {airbnbTags.map((tag) => (
+              <span
+                key={tag}
+                className="font-body text-xs font-medium text-secondary border border-border bg-muted px-2.5 py-1 rounded-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Links */}
+          <div className="flex flex-wrap gap-3">
+            <span className="inline-flex items-center gap-2 font-body font-medium text-sm text-secondary border border-border bg-muted px-5 py-2.5 rounded-md cursor-not-allowed select-none">
+              Tableau Public
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                <path
+                  d="M1.5 9.5L9.5 1.5M9.5 1.5H4M9.5 1.5V7"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="text-xs font-normal opacity-60">(coming soon)</span>
+            </span>
           </div>
         </div>
       </div>
