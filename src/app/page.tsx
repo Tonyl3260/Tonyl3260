@@ -1,6 +1,7 @@
 import Hero from "./components/Hero";
 import Experience from "./components/Experience";
 import Skills from "./components/Skills";
+import Certifications from "./components/Certifications";
 import ProjectGrid from "./components/ProjectGrid";
 import Footer from "./components/Footer";
 
@@ -11,6 +12,7 @@ export default function Home() {
       <Experience />
       <ProjectGrid />
       <Skills />
+      <Certifications />
       <Footer />
     </main>
   );

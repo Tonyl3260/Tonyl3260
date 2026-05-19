@@ -185,6 +185,17 @@ function IconGitHub() {
   );
 }
 
+function IconDownload() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+      <polyline points="7 11 12 16 17 11" />
+      <line x1="12" y1="4" x2="12" y2="16" />
+    </svg>
+  );
+}
+
 function IconTableau() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"
@@ -295,6 +306,14 @@ export default function Hero() {
         >
           Get in touch
         </button>
+        <a
+          href="/Tony Lin Resume.pdf"
+          download="Tony Lin Resume.pdf"
+          className="inline-flex items-center gap-2 font-body font-medium text-sm text-primary border border-border px-[18px] py-2 rounded-lg hover:border-primary hover:bg-muted transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >
+          <span className="w-4 h-4 shrink-0"><IconDownload /></span>
+          Resume
+        </a>
       </div>
 
       {/* Stat cards — 4-col desktop, 2-col mobile */}

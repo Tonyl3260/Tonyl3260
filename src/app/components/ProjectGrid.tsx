@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScrollReveal from "./ScrollReveal";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -26,7 +26,7 @@ function IconGitHub() {
   );
 }
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface ProjectLink {
   icon: React.ReactNode;
@@ -39,6 +39,19 @@ interface Stat {
   label: string;
 }
 
+interface AnalyticsPill {
+  label: string;
+  sub: string;
+  color: string;
+}
+
+interface ModalData {
+  problem: string;
+  approach: string;
+  pills: AnalyticsPill[];
+  results: string;
+}
+
 interface ProjectData {
   title: string;
   badge: { text: string; variant: "live" | "soon" };
@@ -47,7 +60,12 @@ interface ProjectData {
   links: ProjectLink[];
   accentColor: string;
   stats?: Stat[];
+  statLabel?: string;
+  ctaLabel?: string;
+  modal?: ModalData;
 }
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 const projects: ProjectData[] = [
   {
@@ -63,10 +81,26 @@ const projects: ProjectData[] = [
     ],
     accentColor: "#378ADD",
     stats: [
-      { value: "$70K+", label: "Revenue" },
-      { value: "5,659", label: "Orders" },
-      { value: "3",     label: "Platforms" },
+      { value: "458",     label: "Orders" },
+      { value: "$12,657", label: "Revenue" },
+      { value: "50",      label: "States reached" },
     ],
+    statLabel: "Q1 2026 · TCGPlayer",
+    ctaLabel: "Explore the dashboard ↗",
+    modal: {
+      problem:
+        "Running a TCG reselling business across 3 platforms meant tracking hundreds of orders in spreadsheets with no clear view of margins, demand, or pricing.",
+      approach:
+        "Built a full ETL pipeline using Python to clean raw TCGPlayer export CSVs, calculate net margins after platform fees and shipping, and flag slow-moving inventory for repricing. Loaded into Tableau for visualization and a Next.js frontend for the live dashboard.",
+      pills: [
+        { label: "Descriptive",  sub: "what happened — sales trends",        color: "#378ADD" },
+        { label: "Diagnostic",   sub: "why — fee and margin breakdown",       color: "#EF9F27" },
+        { label: "Predictive",   sub: "what next — repricing signals",        color: "#1D9E75" },
+        { label: "Prescriptive", sub: "what to do — restock decisions",       color: "#534AB7" },
+      ],
+      results:
+        "458 orders tracked · $12,657 Q1 revenue · 50 states reached · 3 platforms compared",
+    },
   },
   {
     title: "Toronto Airbnb Analysis",
@@ -78,6 +112,25 @@ const projects: ProjectData[] = [
       { icon: <IconExternalLink />, label: "Tableau", href: "https://public.tableau.com/app/profile/tonylin3260/viz/TorontoAirbnbOverview/TorontoAirbnbOverview" },
     ],
     accentColor: "#EF9F27",
+    stats: [
+      { value: "18K+", label: "Listings" },
+      { value: "140+", label: "Neighbourhoods" },
+      { value: "2",    label: "Viz types" },
+    ],
+    statLabel: "Inside Airbnb Dataset",
+    ctaLabel: "View on Tableau Public ↗",
+    modal: {
+      problem:
+        "Understanding how Airbnb pricing, occupancy, and host behaviour varies across Toronto neighbourhoods using publicly available Inside Airbnb data.",
+      approach:
+        "Cleaned and explored the dataset using Python and Excel. Built Tableau dashboards to visualize price distribution by neighbourhood, occupancy trends, and host performance metrics.",
+      pills: [
+        { label: "Descriptive", sub: "price and occupancy summaries", color: "#EF9F27" },
+        { label: "Diagnostic",  sub: "why certain areas cost more",   color: "#EF9F27" },
+      ],
+      results:
+        "18K+ listings analyzed · 140+ neighbourhoods · Published to Tableau Public",
+    },
   },
   {
     title: "NYC DOT Traffic Map",
@@ -89,6 +142,26 @@ const projects: ProjectData[] = [
       { icon: <IconExternalLink />, label: "Live app", href: "https://flowmap.nyctmc.org/polyline_editor/" },
     ],
     accentColor: "#1D9E75",
+    stats: [
+      { value: "850+", label: "Cameras" },
+      { value: "5",    label: "Boroughs" },
+      { value: "95%+", label: "Data accuracy" },
+    ],
+    statLabel: "NYC DOT Internship",
+    ctaLabel: "View live map ↗",
+    modal: {
+      problem:
+        "NYC DOT needed a real-time way to monitor vehicle flow and congestion across all 5 boroughs to support field operations and citywide congestion response.",
+      approach:
+        "Co-built a geospatial traffic flow map at flowmap.nyctmc.org during the DOT internship. Built and maintained operational reporting tools for traffic counts, incidents, and speed enforcement across 850+ cameras using SQL and Python pipelines.",
+      pills: [
+        { label: "Descriptive",  sub: "live traffic counts and incident logs", color: "#1D9E75" },
+        { label: "Diagnostic",   sub: "congestion pattern identification",      color: "#1D9E75" },
+        { label: "Prescriptive", sub: "contractor scheduling support",          color: "#1D9E75" },
+      ],
+      results:
+        "850+ cameras monitored · 5 boroughs · 95%+ data accuracy · Used in production at NYC DOT",
+    },
   },
 ];
 
@@ -150,64 +223,126 @@ function ProjectLinkItem({ link }: { link: ProjectLink }) {
   );
 }
 
-// Full-width YnotCard with stats block on the right
-function YnotProjectCard({ project }: { project: ProjectData }) {
-  const [hovered, setHovered] = useState(false);
+// ─── Project modal ────────────────────────────────────────────────────────────
+
+function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () => void }) {
+  const modal = project.modal!;
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onClick={onClose}
       style={{
-        background: "#111113",
-        borderRadius: "14px",
-        padding: "18px",
-        transform: hovered ? "translateY(-3px)" : "none",
-        transition: "transform 200ms ease-out, border-color 200ms ease-out",
-        ...cardBorders(hovered, project.accentColor),
+        position: "fixed", inset: 0, zIndex: 50,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "16px",
+        backgroundColor: "rgba(0,0,0,0.7)",
+        backdropFilter: "blur(4px)",
       }}
     >
-      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
-        {/* Left: content */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", marginBottom: "10px" }}>
-            <h3 className="font-heading" style={{ fontSize: "15px", fontWeight: 600, color: "#e8e8ea", lineHeight: 1.3 }}>
-              {project.title}
-            </h3>
-            <Badge text={project.badge.text} variant={project.badge.variant} />
-          </div>
-          <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.6", marginBottom: "14px" }}>
-            {project.description}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#111113",
+          border: `1px solid ${project.accentColor}40`,
+          borderRadius: "16px",
+          width: "100%",
+          maxWidth: "600px",
+          maxHeight: "80vh",
+          overflowY: "auto",
+          padding: "28px",
+          animation: "modal-fade-in 150ms ease-out forwards",
+          position: "relative",
+        }}
+      >
+        {/* Close */}
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          style={{
+            position: "absolute", top: "16px", right: "16px",
+            background: "none", border: "none", color: "#444",
+            cursor: "pointer", padding: "4px", lineHeight: 1,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
+        {/* Title */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px", paddingRight: "28px" }}>
+          <h2 className="font-heading" style={{ fontSize: "18px", fontWeight: 700, color: "#e8e8ea" }}>
+            {project.title}
+          </h2>
+          <Badge text={project.badge.text} variant={project.badge.variant} />
+        </div>
+
+        {/* The Problem */}
+        <div style={{ marginBottom: "20px" }}>
+          <p className="font-body" style={{ fontSize: "10px", fontWeight: 600, color: "#444", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>
+            The Problem
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
-            {project.tags.map((tag) => <Tag key={tag} label={tag} />)}
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "14px", marginTop: "auto" }}>
-            {project.links.map((link) => <ProjectLinkItem key={link.label} link={link} />)}
+          <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.7" }}>
+            {modal.problem}
+          </p>
+        </div>
+
+        {/* The Approach */}
+        <div style={{ marginBottom: "20px" }}>
+          <p className="font-body" style={{ fontSize: "10px", fontWeight: 600, color: "#444", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>
+            The Approach
+          </p>
+          <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.7" }}>
+            {modal.approach}
+          </p>
+        </div>
+
+        {/* Analytics Type */}
+        <div style={{ marginBottom: "20px" }}>
+          <p className="font-body" style={{ fontSize: "10px", fontWeight: 600, color: "#444", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "10px" }}>
+            Analytics Type
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            {modal.pills.map((p) => (
+              <div
+                key={p.label}
+                style={{ background: `${p.color}14`, border: `1px solid ${p.color}33`, borderRadius: "8px", padding: "5px 11px" }}
+              >
+                <span className="font-body" style={{ fontSize: "12px", fontWeight: 600, color: p.color, display: "block", lineHeight: 1.3 }}>
+                  {p.label}
+                </span>
+                <span className="font-body" style={{ fontSize: "10px", color: "#555" }}>
+                  {p.sub}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Right: stats block */}
-        <div
-          style={{
-            background: "#0d0d0f",
-            borderRadius: "10px",
-            padding: "20px 28px",
-            display: "flex",
-            gap: "28px",
-            alignItems: "center",
-            alignSelf: "stretch",
-            flexShrink: 0,
-          }}
-        >
-          {project.stats?.map((stat) => (
-            <div key={stat.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "5px" }}>
-              <span className="font-heading" style={{ fontSize: "20px", fontWeight: 600, color: "#378ADD", lineHeight: 1 }}>
-                {stat.value}
-              </span>
-              <span className="font-body" style={{ fontSize: "11px", color: "#444" }}>
-                {stat.label}
-              </span>
-            </div>
+        {/* Results */}
+        <div style={{ marginBottom: "24px" }}>
+          <p className="font-body" style={{ fontSize: "10px", fontWeight: 600, color: "#444", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>
+            Results
+          </p>
+          <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.7" }}>
+            {modal.results}
+          </p>
+        </div>
+
+        {/* Links */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", borderTop: "1px solid #1e1e22", paddingTop: "20px" }}>
+          {project.links.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-[5px] bg-[#1a1a1d] border border-[#2a2a2f] text-[#aaa] px-3 py-[5px] rounded-[8px] text-[12px] font-body font-medium hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span style={{ width: "13px", height: "13px", display: "flex" }}>{link.icon}</span>
+              {link.label}
+            </Link>
           ))}
         </div>
       </div>
@@ -215,41 +350,85 @@ function YnotProjectCard({ project }: { project: ProjectData }) {
   );
 }
 
-// Standard project card
-function ProjectCard({ project }: { project: ProjectData }) {
+// ─── Full project card ────────────────────────────────────────────────────────
+
+function FullProjectCard({ project }: { project: ProjectData }) {
   const [hovered, setHovered] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setModalOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modalOpen]);
+
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: "#111113",
-        borderRadius: "14px",
-        padding: "18px",
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        transform: hovered ? "translateY(-3px)" : "none",
-        transition: "transform 200ms ease-out, border-color 200ms ease-out",
-        ...cardBorders(hovered, project.accentColor),
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", marginBottom: "10px" }}>
-        <h3 className="font-heading" style={{ fontSize: "15px", fontWeight: 600, color: "#e8e8ea", lineHeight: 1.3 }}>
-          {project.title}
-        </h3>
-        <Badge text={project.badge.text} variant={project.badge.variant} />
+    <>
+      <div
+        onClick={() => project.modal && setModalOpen(true)}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background: "#111113",
+          borderRadius: "14px",
+          padding: "18px",
+          cursor: project.modal ? "pointer" : "default",
+          transform: hovered ? "translateY(-3px)" : "none",
+          transition: "transform 200ms ease-out, border-color 200ms ease-out",
+          ...cardBorders(hovered, project.accentColor),
+        }}
+      >
+        <div className="flex flex-col sm:flex-row gap-5 items-start">
+
+          {/* Left column */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", marginBottom: "10px" }}>
+              <h3 className="font-heading" style={{ fontSize: "15px", fontWeight: 600, color: "#e8e8ea", lineHeight: 1.3 }}>
+                {project.title}
+              </h3>
+              <Badge text={project.badge.text} variant={project.badge.variant} />
+            </div>
+            <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.6", marginBottom: "14px" }}>
+              {project.description}
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+              {project.tags.map((tag) => <Tag key={tag} label={tag} />)}
+            </div>
+          </div>
+
+        </div>
+
+        {/* CTA pills */}
+        {project.modal && (
+          <div
+            style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "14px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {project.ctaLabel && (
+              <Link
+                href={project.links[0].href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center font-body text-[12px] px-3 py-[5px] rounded-[8px] border border-[#2a2a2f] text-[#555] bg-transparent hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150"
+              >
+                {project.ctaLabel}
+              </Link>
+            )}
+            <button
+              onClick={() => setModalOpen(true)}
+              className="inline-flex items-center font-body text-[12px] px-3 py-[5px] rounded-[8px] border border-[#2a2a2f] text-[#555] bg-transparent hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150 cursor-pointer"
+            >
+              Read the breakdown →
+            </button>
+          </div>
+        )}
       </div>
-      <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.6", marginBottom: "14px" }}>
-        {project.description}
-      </p>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
-        {project.tags.map((tag) => <Tag key={tag} label={tag} />)}
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "14px", marginTop: "auto" }}>
-        {project.links.map((link) => <ProjectLinkItem key={link.label} link={link} />)}
-      </div>
-    </div>
+
+      {modalOpen && project.modal && (
+        <ProjectModal project={project} onClose={() => setModalOpen(false)} />
+      )}
+    </>
   );
 }
 
@@ -265,12 +444,10 @@ export default function ProjectGrid() {
       </ScrollReveal>
 
       <ScrollReveal delay={60}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="col-span-1 sm:col-span-2">
-            <YnotProjectCard project={projects[0]} />
-          </div>
-          <ProjectCard project={projects[1]} />
-          <ProjectCard project={projects[2]} />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {projects.map((project) => (
+            <FullProjectCard key={project.title} project={project} />
+          ))}
         </div>
       </ScrollReveal>
     </section>

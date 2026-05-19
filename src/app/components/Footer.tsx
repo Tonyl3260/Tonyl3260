@@ -54,7 +54,7 @@ export default function Footer() {
   return (
     <footer className="px-6 pb-8 max-w-4xl mx-auto">
       <div
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3
+        className="flex flex-row items-center justify-between gap-3
           bg-muted border-[0.5px] border-border rounded-xl px-5"
         style={{ paddingTop: "14px", paddingBottom: "14px" }}
       >
@@ -66,16 +66,17 @@ export default function Footer() {
               href={link.href}
               target={link.href.startsWith("mailto") ? undefined : "_blank"}
               rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+              aria-label={link.label}
               className="inline-flex items-center gap-1.5 font-body text-[13px] text-secondary hover:text-primary transition-colors duration-150"
             >
               <span className="w-[14px] h-[14px] shrink-0">{link.icon}</span>
-              {link.label}
+              <span className="hidden sm:inline">{link.label}</span>
             </Link>
           ))}
         </div>
 
         {/* Credit */}
-        <p className="font-body text-[12px] text-secondary shrink-0">
+        <p className="font-body text-[12px] text-secondary shrink-0 sm:text-right">
           Tony Lin 2026
         </p>
       </div>
