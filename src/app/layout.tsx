@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Archivo, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import ScrollProgress from "./components/ScrollProgress";
+import ParallaxBackground from "./components/ParallaxBackground";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -17,9 +19,13 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Tony Lin — Data Analyst",
-  description:
-    "Data analyst with a CS background. Skilled in Python, SQL, Tableau, and Excel. CUNY Hunter College, CS 2024.",
+  title: "Tony Lin",
+  description: "Data Analyst based in NYC. 4 years at NYC DOT, founder of YnotCard.",
+  openGraph: {
+    title: "Tony Lin",
+    description: "Data Analyst based in NYC.",
+    url: "https://tonyl3260.vercel.app",
+  },
 };
 
 export default function RootLayout({
@@ -33,6 +39,8 @@ export default function RootLayout({
       className={`${archivo.variable} ${spaceGrotesk.variable} scroll-smooth`}
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
+        <ParallaxBackground />
+        <ScrollProgress />
         {children}
       </body>
     </html>

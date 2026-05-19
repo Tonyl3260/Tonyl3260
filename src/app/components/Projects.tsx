@@ -1,7 +1,21 @@
-import Link from "next/link";
+"use client";
 
-const ynotcardTags = ["Tableau", "React", "Next.js", "JavaScript"];
-const airbnbTags = ["Tableau", "Data Visualization", "Public Dataset"];
+import Link from "next/link";
+import { useState } from "react";
+
+// ─── Tag data ────────────────────────────────────────────────────────────────
+
+const YNOTCARD_TAGS  = ["Tableau", "React", "Next.js", "JavaScript"];
+const AIRBNB_TAGS    = ["Tableau", "Python", "Data Visualization", "Public Dataset"];
+
+const FILTERS = ["All", "Tableau", "React", "Python"] as const;
+type Filter = typeof FILTERS[number];
+
+function matches(tags: string[], filter: Filter) {
+  return filter === "All" || tags.includes(filter);
+}
+
+// ─── SVG placeholders ────────────────────────────────────────────────────────
 
 function DashboardPlaceholder() {
   return (
@@ -13,16 +27,11 @@ function DashboardPlaceholder() {
       role="img"
       aria-label="YnotCard dashboard — inventory tracker with Tableau sales charts"
     >
-      {/* Page background */}
       <rect width="800" height="450" fill="#F8FAFC" />
-
-      {/* Top nav bar */}
       <rect width="800" height="48" fill="#FFFFFF" />
       <rect x="20" y="16" width="84" height="14" rx="3" fill="#18181B" />
       <rect x="660" y="15" width="56" height="16" rx="8" fill="#2563EB" />
       <line x1="0" y1="48" x2="800" y2="48" stroke="#E4E4E7" />
-
-      {/* Left sidebar */}
       <rect x="0" y="48" width="164" height="402" fill="#FFFFFF" />
       <line x1="164" y1="48" x2="164" y2="450" stroke="#E4E4E7" />
       <rect x="16" y="72" width="100" height="9" rx="3" fill="#94A3B8" />
@@ -34,31 +43,23 @@ function DashboardPlaceholder() {
       <rect x="16" y="198" width="100" height="9" rx="3" fill="#94A3B8" />
       <rect x="16" y="218" width="114" height="10" rx="3" fill="#E4E4E7" />
       <rect x="16" y="240" width="96" height="10" rx="3" fill="#E4E4E7" />
-
-      {/* KPI row */}
       <rect x="184" y="64" width="148" height="70" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="200" y="80" width="56" height="7" rx="2" fill="#94A3B8" />
       <rect x="200" y="96" width="72" height="18" rx="3" fill="#18181B" />
       <rect x="200" y="118" width="44" height="6" rx="2" fill="#22C55E" fillOpacity="0.7" />
-
       <rect x="344" y="64" width="148" height="70" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="360" y="80" width="56" height="7" rx="2" fill="#94A3B8" />
       <rect x="360" y="96" width="64" height="18" rx="3" fill="#2563EB" />
       <rect x="360" y="118" width="52" height="6" rx="2" fill="#94A3B8" />
-
       <rect x="504" y="64" width="148" height="70" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="520" y="80" width="56" height="7" rx="2" fill="#94A3B8" />
       <rect x="520" y="96" width="80" height="18" rx="3" fill="#18181B" />
       <rect x="520" y="118" width="40" height="6" rx="2" fill="#EF4444" fillOpacity="0.6" />
-
-      {/* Bar chart card */}
       <rect x="184" y="148" width="290" height="188" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="200" y="164" width="96" height="9" rx="3" fill="#3F3F46" />
-      {/* gridlines */}
       <line x1="200" y1="298" x2="458" y2="298" stroke="#E4E4E7" />
       <line x1="200" y1="270" x2="458" y2="270" stroke="#E4E4E7" strokeDasharray="3 3" />
       <line x1="200" y1="242" x2="458" y2="242" stroke="#E4E4E7" strokeDasharray="3 3" />
-      {/* bars */}
       <rect x="210" y="268" width="24" height="30" rx="3" fill="#2563EB" fillOpacity="0.25" />
       <rect x="245" y="248" width="24" height="50" rx="3" fill="#2563EB" fillOpacity="0.45" />
       <rect x="280" y="232" width="24" height="66" rx="3" fill="#2563EB" fillOpacity="0.65" />
@@ -66,42 +67,21 @@ function DashboardPlaceholder() {
       <rect x="350" y="224" width="24" height="74" rx="3" fill="#2563EB" fillOpacity="0.75" />
       <rect x="385" y="198" width="24" height="100" rx="3" fill="#2563EB" />
       <rect x="420" y="218" width="24" height="80" rx="3" fill="#2563EB" fillOpacity="0.65" />
-
-      {/* Line chart card */}
       <rect x="486" y="148" width="294" height="188" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="502" y="164" width="104" height="9" rx="3" fill="#3F3F46" />
-      {/* gridlines */}
       <line x1="502" y1="298" x2="764" y2="298" stroke="#E4E4E7" />
       <line x1="502" y1="270" x2="764" y2="270" stroke="#E4E4E7" strokeDasharray="3 3" />
       <line x1="502" y1="242" x2="764" y2="242" stroke="#E4E4E7" strokeDasharray="3 3" />
-      {/* area fill */}
-      <path
-        d="M510 290 L548 268 L586 278 L624 244 L662 256 L700 226 L738 240 L738 298 L510 298 Z"
-        fill="#2563EB"
-        fillOpacity="0.08"
-      />
-      {/* line */}
-      <polyline
-        points="510,290 548,268 586,278 624,244 662,256 700,226 738,240"
-        stroke="#2563EB"
-        strokeWidth="2"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* dots */}
+      <path d="M510 290 L548 268 L586 278 L624 244 L662 256 L700 226 L738 240 L738 298 L510 298 Z" fill="#2563EB" fillOpacity="0.08" />
+      <polyline points="510,290 548,268 586,278 624,244 662,256 700,226 738,240" stroke="#2563EB" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       <circle cx="624" cy="244" r="3.5" fill="#2563EB" />
       <circle cx="700" cy="226" r="3.5" fill="#2563EB" />
-
-      {/* Table card */}
       <rect x="184" y="350" width="596" height="82" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
-      {/* header row */}
       <rect x="200" y="364" width="48" height="7" rx="2" fill="#94A3B8" />
       <rect x="330" y="364" width="48" height="7" rx="2" fill="#94A3B8" />
       <rect x="460" y="364" width="48" height="7" rx="2" fill="#94A3B8" />
       <rect x="590" y="364" width="48" height="7" rx="2" fill="#94A3B8" />
       <line x1="200" y1="378" x2="764" y2="378" stroke="#E4E4E7" />
-      {/* data row */}
       <rect x="200" y="388" width="68" height="8" rx="2" fill="#3F3F46" />
       <rect x="330" y="388" width="52" height="8" rx="2" fill="#3F3F46" />
       <rect x="460" y="388" width="44" height="8" rx="2" fill="#2563EB" fillOpacity="0.75" />
@@ -124,25 +104,18 @@ function AirbnbPlaceholder() {
       role="img"
       aria-label="Toronto Airbnb dashboard — listing map and price distribution charts"
     >
-      {/* Page background */}
       <rect width="800" height="450" fill="#F8FAFC" />
-
-      {/* Top nav bar */}
       <rect width="800" height="48" fill="#FFFFFF" />
       <rect x="20" y="16" width="100" height="14" rx="3" fill="#18181B" />
       <rect x="640" y="15" width="72" height="16" rx="8" fill="#FF385C" fillOpacity="0.15" />
       <rect x="656" y="21" width="40" height="6" rx="2" fill="#FF385C" />
       <line x1="0" y1="48" x2="800" y2="48" stroke="#E4E4E7" />
-
-      {/* Filter bar */}
       <rect x="184" y="60" width="596" height="32" rx="6" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="200" y="70" width="52" height="8" rx="2" fill="#94A3B8" />
       <line x1="268" y1="60" x2="268" y2="92" stroke="#E4E4E7" />
       <rect x="280" y="70" width="60" height="8" rx="2" fill="#94A3B8" />
       <line x1="356" y1="60" x2="356" y2="92" stroke="#E4E4E7" />
       <rect x="368" y="70" width="48" height="8" rx="2" fill="#94A3B8" />
-
-      {/* Left sidebar */}
       <rect x="0" y="48" width="164" height="402" fill="#FFFFFF" />
       <line x1="164" y1="48" x2="164" y2="450" stroke="#E4E4E7" />
       <rect x="16" y="72" width="100" height="9" rx="3" fill="#94A3B8" />
@@ -153,29 +126,21 @@ function AirbnbPlaceholder() {
       <rect x="16" y="198" width="100" height="9" rx="3" fill="#94A3B8" />
       <rect x="16" y="218" width="114" height="10" rx="3" fill="#E4E4E7" />
       <rect x="16" y="240" width="96" height="10" rx="3" fill="#E4E4E7" />
-
-      {/* KPI row */}
       <rect x="184" y="104" width="140" height="62" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="200" y="118" width="56" height="7" rx="2" fill="#94A3B8" />
       <rect x="200" y="132" width="68" height="16" rx="3" fill="#18181B" />
       <rect x="200" y="152" width="44" height="6" rx="2" fill="#22C55E" fillOpacity="0.7" />
-
       <rect x="336" y="104" width="140" height="62" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="352" y="118" width="56" height="7" rx="2" fill="#94A3B8" />
       <rect x="352" y="132" width="60" height="16" rx="3" fill="#FF385C" fillOpacity="0.8" />
       <rect x="352" y="152" width="52" height="6" rx="2" fill="#94A3B8" />
-
       <rect x="488" y="104" width="140" height="62" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="504" y="118" width="56" height="7" rx="2" fill="#94A3B8" />
       <rect x="504" y="132" width="76" height="16" rx="3" fill="#18181B" />
       <rect x="504" y="152" width="40" height="6" rx="2" fill="#94A3B8" />
-
-      {/* Map card */}
       <rect x="184" y="178" width="290" height="200" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="200" y="194" width="80" height="9" rx="3" fill="#3F3F46" />
-      {/* Map background */}
       <rect x="196" y="210" width="262" height="158" rx="4" fill="#EFF6FF" />
-      {/* Streets */}
       <line x1="230" y1="210" x2="230" y2="368" stroke="#DBEAFE" strokeWidth="2" />
       <line x1="280" y1="210" x2="280" y2="368" stroke="#DBEAFE" strokeWidth="2" />
       <line x1="330" y1="210" x2="330" y2="368" stroke="#DBEAFE" strokeWidth="2" />
@@ -183,7 +148,6 @@ function AirbnbPlaceholder() {
       <line x1="196" y1="250" x2="458" y2="250" stroke="#DBEAFE" strokeWidth="2" />
       <line x1="196" y1="300" x2="458" y2="300" stroke="#DBEAFE" strokeWidth="2" />
       <line x1="196" y1="340" x2="458" y2="340" stroke="#DBEAFE" strokeWidth="2" />
-      {/* Listing dots */}
       <circle cx="245" cy="232" r="4" fill="#FF385C" fillOpacity="0.8" />
       <circle cx="310" cy="268" r="5" fill="#FF385C" />
       <circle cx="260" cy="315" r="3.5" fill="#FF385C" fillOpacity="0.6" />
@@ -193,16 +157,12 @@ function AirbnbPlaceholder() {
       <circle cx="220" cy="355" r="4" fill="#FF385C" fillOpacity="0.65" />
       <circle cx="415" cy="240" r="3" fill="#FF385C" fillOpacity="0.55" />
       <circle cx="290" cy="330" r="4.5" fill="#FF385C" fillOpacity="0.75" />
-
-      {/* Price distribution card */}
       <rect x="486" y="178" width="294" height="200" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="502" y="194" width="120" height="9" rx="3" fill="#3F3F46" />
-      {/* gridlines */}
       <line x1="502" y1="340" x2="764" y2="340" stroke="#E4E4E7" />
       <line x1="502" y1="310" x2="764" y2="310" stroke="#E4E4E7" strokeDasharray="3 3" />
       <line x1="502" y1="280" x2="764" y2="280" stroke="#E4E4E7" strokeDasharray="3 3" />
       <line x1="502" y1="250" x2="764" y2="250" stroke="#E4E4E7" strokeDasharray="3 3" />
-      {/* bars — price histogram */}
       <rect x="512" y="316" width="28" height="24" rx="2" fill="#FF385C" fillOpacity="0.25" />
       <rect x="550" y="292" width="28" height="48" rx="2" fill="#FF385C" fillOpacity="0.45" />
       <rect x="588" y="256" width="28" height="84" rx="2" fill="#FF385C" fillOpacity="0.7" />
@@ -210,8 +170,6 @@ function AirbnbPlaceholder() {
       <rect x="664" y="284" width="28" height="56" rx="2" fill="#FF385C" fillOpacity="0.65" />
       <rect x="702" y="304" width="28" height="36" rx="2" fill="#FF385C" fillOpacity="0.4" />
       <rect x="740" y="322" width="18" height="18" rx="2" fill="#FF385C" fillOpacity="0.25" />
-
-      {/* Neighbourhood table */}
       <rect x="184" y="390" width="596" height="52" rx="7" fill="#FFFFFF" stroke="#E4E4E7" />
       <rect x="200" y="402" width="64" height="7" rx="2" fill="#94A3B8" />
       <rect x="370" y="402" width="56" height="7" rx="2" fill="#94A3B8" />
@@ -224,11 +182,40 @@ function AirbnbPlaceholder() {
   );
 }
 
+// ─── Card wrapper ─────────────────────────────────────────────────────────────
+
+function CardShell({
+  visible,
+  children,
+}: {
+  visible: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`rounded-xl border border-border overflow-hidden bg-white mt-6 first:mt-0
+        hover:-translate-y-0.5 hover:shadow-md
+        transition-all duration-200
+        ${visible ? "" : "hidden"}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ─── Section ──────────────────────────────────────────────────────────────────
+
 export default function Projects() {
+  const [activeFilter, setActiveFilter] = useState<Filter>("All");
+
+  const ynotVisible  = matches(YNOTCARD_TAGS, activeFilter);
+  const airbnbVisible = matches(AIRBNB_TAGS,  activeFilter);
+
   return (
     <section id="projects" className="px-6 py-24 max-w-4xl mx-auto">
+
       {/* Section header */}
-      <div className="flex items-center gap-3 mb-12">
+      <div className="flex items-center gap-3 mb-8">
         <h2 className="font-heading text-3xl font-semibold tracking-tight text-primary">
           Projects
         </h2>
@@ -237,9 +224,26 @@ export default function Projects() {
         </span>
       </div>
 
-      {/* YnotCard — featured card */}
-      <div className="rounded-xl border border-border overflow-hidden bg-white">
-        {/* Screenshot placeholder */}
+      {/* Filter buttons */}
+      <div className="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter projects by technology">
+        {FILTERS.map((f) => (
+          <button
+            key={f}
+            onClick={() => setActiveFilter(f)}
+            aria-pressed={activeFilter === f}
+            className={`font-body text-sm font-medium px-3 py-1.5 rounded-md border transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+              activeFilter === f
+                ? "border-accent bg-accent/10 text-accent"
+                : "border-border text-secondary hover:border-primary hover:text-primary"
+            }`}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
+      {/* YnotCard */}
+      <CardShell visible={ynotVisible}>
         <div className="relative border-b border-border bg-muted overflow-hidden">
           <DashboardPlaceholder />
           <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-white border border-border text-xs font-body font-medium text-secondary px-2.5 py-1 rounded-full shadow-sm">
@@ -247,8 +251,6 @@ export default function Projects() {
             Live
           </span>
         </div>
-
-        {/* Content */}
         <div className="p-7 sm:p-8">
           <p className="font-body text-xs font-medium tracking-widest uppercase text-secondary mb-1.5">
             Featured Project
@@ -262,20 +264,13 @@ export default function Projects() {
             performance built to put data analysis at the center of a collecting
             hobby.
           </p>
-
-          {/* Tech tags */}
           <div className="flex flex-wrap gap-2 mb-7">
-            {ynotcardTags.map((tag) => (
-              <span
-                key={tag}
-                className="font-body text-xs font-medium text-secondary border border-border bg-muted px-2.5 py-1 rounded-md"
-              >
+            {YNOTCARD_TAGS.map((tag) => (
+              <span key={tag} className="font-body text-xs font-medium text-secondary border border-border bg-muted px-2.5 py-1 rounded-md">
                 {tag}
               </span>
             ))}
           </div>
-
-          {/* Links */}
           <div className="flex flex-wrap gap-3">
             <Link
               href="https://ynotcard.vercel.app"
@@ -284,20 +279,8 @@ export default function Projects() {
               className="inline-flex items-center gap-2 font-body font-medium text-sm bg-primary text-white px-5 py-2.5 rounded-md hover:bg-secondary transition-colors duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               View Live
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 11 11"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M1.5 9.5L9.5 1.5M9.5 1.5H4M9.5 1.5V7"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                <path d="M1.5 9.5L9.5 1.5M9.5 1.5H4M9.5 1.5V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
             <Link
@@ -306,29 +289,20 @@ export default function Projects() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-body font-medium text-sm text-primary border border-border px-5 py-2.5 rounded-md hover:border-primary hover:bg-muted transition-colors duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
               </svg>
               GitHub
             </Link>
           </div>
         </div>
-      </div>
+      </CardShell>
 
       {/* Toronto Airbnb Dashboard */}
-      <div className="rounded-xl border border-border overflow-hidden bg-white mt-6">
-        {/* Screenshot placeholder */}
+      <CardShell visible={airbnbVisible}>
         <div className="relative border-b border-border bg-muted overflow-hidden">
           <AirbnbPlaceholder />
         </div>
-
-        {/* Content */}
         <div className="p-7 sm:p-8">
           <p className="font-body text-xs font-medium tracking-widest uppercase text-secondary mb-1.5">
             Data Visualization
@@ -338,41 +312,36 @@ export default function Projects() {
           </h3>
           <p className="font-body text-base text-secondary leading-relaxed max-w-2xl mb-6">
             An interactive Tableau dashboard exploring Toronto&apos;s Airbnb market using
-            the public Inside Airbnb dataset. Visualizes listing density by neighbourhood,
-            price distributions, room-type breakdowns, and availability trends to surface
-            patterns across the city.
+            the public Inside Airbnb dataset. Python was used to clean and reshape the
+            raw CSV before loading into Tableau. Visualizes listing density by
+            neighbourhood, price distributions, room-type breakdowns, and availability
+            trends to surface patterns across the city.
           </p>
-
-          {/* Tech tags */}
           <div className="flex flex-wrap gap-2 mb-7">
-            {airbnbTags.map((tag) => (
-              <span
-                key={tag}
-                className="font-body text-xs font-medium text-secondary border border-border bg-muted px-2.5 py-1 rounded-md"
-              >
+            {AIRBNB_TAGS.map((tag) => (
+              <span key={tag} className="font-body text-xs font-medium text-secondary border border-border bg-muted px-2.5 py-1 rounded-md">
                 {tag}
               </span>
             ))}
           </div>
-
-          {/* Links */}
           <div className="flex flex-wrap gap-3">
             <span className="inline-flex items-center gap-2 font-body font-medium text-sm text-secondary border border-border bg-muted px-5 py-2.5 rounded-md cursor-not-allowed select-none">
               Tableau Public
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-                <path
-                  d="M1.5 9.5L9.5 1.5M9.5 1.5H4M9.5 1.5V7"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <path d="M1.5 9.5L9.5 1.5M9.5 1.5H4M9.5 1.5V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="text-xs font-normal opacity-60">(coming soon)</span>
             </span>
           </div>
         </div>
-      </div>
+      </CardShell>
+
+      {/* Empty state */}
+      {!ynotVisible && !airbnbVisible && (
+        <p className="font-body text-sm text-secondary text-center py-12">
+          No projects match this filter yet.
+        </p>
+      )}
 
       {/* Future projects hint */}
       <p className="font-body text-sm text-secondary mt-8 text-center">
