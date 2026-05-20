@@ -7,9 +7,9 @@ import { useState, useEffect } from "react";
 
 const phrases = [
   "Data Analyst",
-  "SQL Analyst",
+  "Traffic Analyst",
   "Tableau Developer",
-  "Python Analyst",
+  "Dashboard Developer",
   "CUNY Hunter '24",
 ];
 
@@ -137,9 +137,9 @@ const pills = [
 ];
 
 const stats = [
-  { value: "4",     label: "Years of experience" },
-  { value: "$70K",  label: "YnotCard revenue" },
-  { value: "5659",  label: "Orders completed" },
+  { value: "4",     label: "Years at NYC DOT"  },
+  { value: "$70K+", label: "Revenue tracked"   },
+  { value: "3",     label: "Live projects"      },
 ];
 
 // ─── Contact modal icons ──────────────────────────────────────────────────────
@@ -209,11 +209,60 @@ function IconTableau() {
 }
 
 const contactLinks = [
-  { icon: <IconMail />,     label: "tonylin3260@gmail.com",      href: "mailto:tonylin3260@gmail.com" },
-  { icon: <IconLinkedIn />, label: "linkedin.com/in/tonylin3260", href: "https://www.linkedin.com/in/tonylin3260/" },
-  { icon: <IconGitHub />,   label: "github.com/Tonyl3260",       href: "https://github.com/Tonyl3260" },
-  { icon: <IconTableau />,  label: "Tableau Public",             href: "https://public.tableau.com/app/profile/tonylin3260/vizzes" },
+  { icon: <IconMail />,     label: "tonylin3260@gmail.com",                       href: "mailto:tonylin3260@gmail.com",                                              copy: "tonylin3260@gmail.com" },
+  { icon: <IconLinkedIn />, label: "linkedin.com/in/tonylin3260",                 href: "https://www.linkedin.com/in/tonylin3260/",                                  copy: "https://www.linkedin.com/in/tonylin3260/" },
+  { icon: <IconGitHub />,   label: "github.com/Tonyl3260",                        href: "https://github.com/Tonyl3260",                                              copy: "https://github.com/Tonyl3260" },
+  { icon: <IconTableau />,  label: "public.tableau.com/app/profile/tonylin3260",  href: "https://public.tableau.com/app/profile/tonylin3260/vizzes",                  copy: "https://public.tableau.com/app/profile/tonylin3260/vizzes" },
 ];
+
+// ─── Contact row with copy button ────────────────────────────────────────────
+
+function ContactRow({ link }: { link: typeof contactLinks[number] }) {
+  const [hovered, setHovered] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy(e: React.MouseEvent) {
+    e.preventDefault();
+    navigator.clipboard.writeText(link.copy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
+  return (
+    <div
+      className="flex items-center justify-between gap-2"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <a
+        href={link.href}
+        target={link.href.startsWith("mailto") ? undefined : "_blank"}
+        rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+        className="inline-flex items-center gap-2.5 font-body text-sm text-secondary hover:text-primary transition-colors duration-150 min-w-0"
+      >
+        <span className="w-4 h-4 shrink-0">{link.icon}</span>
+        <span className="truncate">{link.label}</span>
+      </a>
+      <button
+        onClick={handleCopy}
+        aria-label={copied ? "Copied" : "Copy to clipboard"}
+        className="shrink-0 w-6 h-6 flex items-center justify-center text-secondary hover:text-primary transition-all duration-150"
+        style={{ opacity: hovered || copied ? 1 : 0, transition: "opacity 150ms, color 150ms" }}
+      >
+        {copied ? (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        ) : (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        )}
+      </button>
+    </div>
+  );
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -316,8 +365,8 @@ export default function Hero() {
         </a>
       </div>
 
-      {/* Stat cards — 4-col desktop, 2-col mobile */}
-      <div className="grid grid-cols-3 gap-3 w-full max-w-2xl mb-4">
+      {/* Stat cards */}
+      <div className="grid grid-cols-3 gap-3 w-full max-w-2xl mb-4 mt-10">
         {stats.map((s) => (
           <StatCard key={s.label} value={s.value} label={s.label} />
         ))}
@@ -351,7 +400,7 @@ export default function Hero() {
           onClick={() => setContactOpen(false)}
         >
           <div
-            className="bg-[#111113] rounded-xl w-full max-w-[320px] relative"
+            className="bg-[#111113] rounded-xl w-full max-w-[420px] relative"
             style={{ padding: "24px", animation: "modal-fade-in 150ms ease-out forwards" }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -372,16 +421,7 @@ export default function Hero() {
             {/* Contact rows */}
             <div className="flex flex-col gap-3">
               {contactLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target={link.href.startsWith("mailto") ? undefined : "_blank"}
-                  rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
-                  className="inline-flex items-center gap-2.5 font-body text-sm text-secondary hover:text-primary transition-colors duration-150"
-                >
-                  <span className="w-4 h-4 shrink-0">{link.icon}</span>
-                  {link.label}
-                </a>
+                <ContactRow key={link.href} link={link} />
               ))}
             </div>
           </div>

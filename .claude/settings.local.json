@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Tony\\\\tony-portfolio\\\\src\\\\app\\\\projects\\\\ynotcard\")",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"dir created\")",
+      "PowerShell(New-Item *)"
+    ]
+  }
+}

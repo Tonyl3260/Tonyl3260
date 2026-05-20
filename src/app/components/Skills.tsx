@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react"; // useState used by Deck
 import ScrollReveal from "./ScrollReveal";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -8,15 +8,12 @@ import ScrollReveal from "./ScrollReveal";
 interface SkillCard {
   name: string;
   subtitle: string;
-  pct: number;
-  detail: string;
   color: string;
 }
 
 interface DeckConfig {
   id: string;
   label: string;
-  hint: string;
   suit: string;
   accent: string;
   cards: SkillCard[];
@@ -26,99 +23,27 @@ const DECKS: DeckConfig[] = [
   {
     id: "analytics",
     label: "Analytics",
-    hint: "data · reporting · insights",
     suit: "♠",
     accent: "#378ADD",
     cards: [
-      {
-        name: "Python",
-        subtitle: "pandas · ETL",
-        pct: 88,
-        color: "#378ADD",
-        detail:
-          "Built the YnotCard ETL pipeline parsing TCGPlayer exports, calculating net margins after fees, and flagging repricing opportunities.",
-      },
-      {
-        name: "SQL",
-        subtitle: "joins · views",
-        pct: 82,
-        color: "#34D399",
-        detail:
-          "Queried BQE traffic datasets at NYC DOT using joins, window functions, and year-over-year aggregation to identify congestion trends.",
-      },
-      {
-        name: "Tableau",
-        subtitle: "dashboards",
-        pct: 85,
-        color: "#FB923C",
-        detail:
-          "Built two Tableau Public dashboards: YnotCard sales analytics (394 Q1 orders) and a Toronto Airbnb exploratory analysis.",
-      },
-      {
-        name: "Excel",
-        subtitle: "pivots · KPIs",
-        pct: 90,
-        color: "#A78BFA",
-        detail:
-          "Pivot tables, VLOOKUP, and conditional formatting for repricing signals across 130+ active YnotCard listings.",
-      },
-      {
-        name: "Analysis",
-        subtitle: "BQE · traffic",
-        pct: 80,
-        color: "#F472B6",
-        detail:
-          "Delivered traffic impact analyses for major NYC events including the Marathon and Yankees/Mets games for congestion planning.",
-      },
+      { name: "Python",   subtitle: "pandas · NumPy · ETL",        color: "#378ADD" },
+      { name: "SQL",      subtitle: "joins · aggregation · views", color: "#34D399" },
+      { name: "Tableau",  subtitle: "dashboards · charts",         color: "#FB923C" },
+      { name: "Excel",    subtitle: "pivots · VLOOKUP · KPIs",     color: "#A78BFA" },
+      { name: "Analysis", subtitle: "traffic · geospatial · DOT",  color: "#F472B6" },
     ],
   },
   {
     id: "engineering",
     label: "Engineering",
-    hint: "apps · pipelines · infra",
-    suit: "♦",
-    accent: "#534AB7",
+    suit: "♥",
+    accent: "#E0394A",
     cards: [
-      {
-        name: "Next.js",
-        subtitle: "React · Recharts",
-        pct: 75,
-        color: "#534AB7",
-        detail:
-          "Built the YnotCard full-stack dashboard with Next.js and Recharts for weekly sales trends, geographic demand, and platform margin comparisons.",
-      },
-      {
-        name: "JavaScript",
-        subtitle: "TypeScript · ES6",
-        pct: 78,
-        color: "#FBBF24",
-        detail:
-          "Used across the YnotCard frontend and data scripts. Async/await, array methods, and TypeScript type annotations.",
-      },
-      {
-        name: "PostgreSQL",
-        subtitle: "AWS RDS",
-        pct: 70,
-        color: "#38BDF8",
-        detail:
-          "PostgreSQL and AWS RDS for structured data storage at YnotCard. Firebase for real-time data in the DOT geospatial traffic map.",
-      },
-      {
-        name: "Python",
-        subtitle: "scripts · ETL",
-        pct: 80,
-        color: "#4ADE80",
-        detail:
-          "Data cleaning scripts, inventory parsing, and the automated pipeline that feeds the YnotCard Tableau dashboards.",
-      },
-      {
-        name: "Git",
-        subtitle: "Docker · GitHub",
-        pct: 82,
-        color: "#F87171",
-        detail:
-          "Daily use for version control, containerization, and dev environment management across all personal and professional projects.",
-      },
+      { name: "Next.js",    subtitle: "React · Recharts",     color: "#534AB7" },
+      { name: "JavaScript", subtitle: "TypeScript · ES6",     color: "#FBBF24" },
+      { name: "Databases",  subtitle: "PostgreSQL · AWS RDS", color: "#38BDF8" },
+      { name: "Python",     subtitle: "scripts · pipelines",  color: "#4ADE80" },
+      { name: "Git",        subtitle: "Docker · GitHub",      color: "#F87171" },
     ],
   },
 ];
@@ -139,13 +64,7 @@ const STACK_H = 225;
 
 // ─── Deck ─────────────────────────────────────────────────────────────────────
 
-function Deck({
-  deck,
-  onCardClick,
-}: {
-  deck: DeckConfig;
-  onCardClick: (card: SkillCard) => void;
-}) {
+function Deck({ deck }: { deck: DeckConfig }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -246,7 +165,7 @@ function Deck({
           return (
             <div
               key={card.name}
-              onClick={(e) => { e.stopPropagation(); onCardClick(card); }}
+              onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => isOpen && setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
               style={{
@@ -279,23 +198,6 @@ function Deck({
               <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: 1.4, flex: 1 }}>
                 {card.subtitle}
               </p>
-              {/* Progress bar */}
-              <div>
-                <div style={{ height: "3px", background: "#1e1e22", borderRadius: "2px", overflow: "hidden" }}>
-                  <div
-                    style={{
-                      height: "100%",
-                      width: isOpen ? `${card.pct}%` : "0%",
-                      background: card.color,
-                      borderRadius: "1px",
-                      transition: `width 600ms ${300 + i * 100}ms ease-out`,
-                    }}
-                  />
-                </div>
-                <p className="font-body" style={{ fontSize: "12px", color: "#444", marginTop: "3px", textAlign: "right" }}>
-                  {card.pct}%
-                </p>
-              </div>
             </div>
           );
         })}
@@ -303,7 +205,7 @@ function Deck({
 
       {/* Hint */}
       <p className="font-body" style={{ fontSize: "11px", color: "#444", marginTop: "12px" }}>
-        {isOpen ? "click anywhere to close" : deck.hint}
+        {isOpen ? "click anywhere to close" : ""}
       </p>
     </div>
   );
@@ -312,8 +214,6 @@ function Deck({
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 export default function Skills() {
-  const [activeCard, setActiveCard] = useState<SkillCard | null>(null);
-
   return (
     <section id="skills" className="border-t border-border px-6 py-12 max-w-4xl mx-auto">
       <div>
@@ -325,37 +225,13 @@ export default function Skills() {
         </ScrollReveal>
 
         <ScrollReveal delay={60}>
-          {/* Decks row */}
           <div
             className="flex flex-wrap justify-center items-start"
-            style={{ gap: "56px", marginBottom: "32px" }}
+            style={{ gap: "56px" }}
           >
             {DECKS.map((deck) => (
-              <Deck key={deck.id} deck={deck} onCardClick={setActiveCard} />
+              <Deck key={deck.id} deck={deck} />
             ))}
-          </div>
-
-          {/* Detail box */}
-          <div
-            style={{
-              background: "#111113",
-              border: "1px solid #1e1e22",
-              borderRadius: "12px",
-              padding: "14px",
-              minHeight: "60px",
-            }}
-          >
-            <p
-              key={activeCard?.detail ?? "default"}
-              className="font-body detail-fade"
-              style={{
-                fontSize: "13px",
-                color: activeCard ? "#888" : "#444",
-                lineHeight: "1.6",
-              }}
-            >
-              {activeCard?.detail ?? "Click a card after fanning to see how it was used."}
-            </p>
           </div>
         </ScrollReveal>
 

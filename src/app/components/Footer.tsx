@@ -45,9 +45,9 @@ function TableauIcon() {
 
 const links = [
   { icon: <MailIcon />,     label: "tonylin3260@gmail.com",      href: "mailto:tonylin3260@gmail.com" },
-  { icon: <LinkedInIcon />, label: "linkedin.com/in/tonylin3260", href: "https://www.linkedin.com/in/tonylin3260/" },
-  { icon: <GitHubIcon />,   label: "github.com/Tonyl3260",       href: "https://github.com/Tonyl3260" },
-  { icon: <TableauIcon />,  label: "Tableau Public",             href: "https://public.tableau.com/app/profile/tonylin3260/vizzes" },
+  { icon: <LinkedInIcon />, label: "LinkedIn",       href: "https://www.linkedin.com/in/tonylin3260/" },
+  { icon: <GitHubIcon />,   label: "GitHub",         href: "https://github.com/Tonyl3260" },
+  { icon: <TableauIcon />,  label: "Tableau Public", href: "https://public.tableau.com/app/profile/tonylin3260/vizzes" },
 ];
 
 export default function Footer() {

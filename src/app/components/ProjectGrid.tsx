@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -62,6 +63,7 @@ interface ProjectData {
   stats?: Stat[];
   statLabel?: string;
   ctaLabel?: string;
+  pageHref?: string;
   modal?: ModalData;
 }
 
@@ -72,7 +74,7 @@ const projects: ProjectData[] = [
     title: "YnotCard Dashboard",
     badge: { text: "Live", variant: "live" },
     description:
-      "Tableau dashboard tracking $70K+ in revenue, 5,659 orders, and real-time card pricing across the YnotCard inventory pipeline.",
+      "Full-stack analytics dashboard tracking TCGPlayer orders, inventory performance, and shipping costs for a live TCG reselling business. 458 orders, $12,657 revenue, 50 states reached in 2026.",
     tags: ["Next.js", "React", "TypeScript", "Tableau", "SQL", "Python"],
     links: [
       { icon: <IconExternalLink />, label: "Live app", href: "https://ynotcard.vercel.app/" },
@@ -87,26 +89,27 @@ const projects: ProjectData[] = [
     ],
     statLabel: "Q1 2026 · TCGPlayer",
     ctaLabel: "Explore the dashboard ↗",
+    pageHref: "/projects/ynotcard",
     modal: {
       problem:
-        "Running a TCG reselling business across 3 platforms meant tracking hundreds of orders in spreadsheets with no clear view of margins, demand, or pricing.",
+        "Running a TCG reselling business means hundreds of orders across multiple months with no easy way to see how long inventory sits, what shipping supplies to reorder, or whether a product is actually profitable after fees and shipping costs. TCGPlayer does not export a clean month-to-month order sheet, so tracking anything required piecing together data manually.",
       approach:
-        "Built a full ETL pipeline using Python to clean raw TCGPlayer export CSVs, calculate net margins after platform fees and shipping, and flag slow-moving inventory for repricing. Loaded into Tableau for visualization and a Next.js frontend for the live dashboard.",
+        "Built Python scripts to clean and combine raw TCGPlayer exports. The main challenges were merging packing slip data across months, removing empty rows that TCGPlayer includes by default, and cleaning the inventory sheet by stripping out columns like Add Quantity and rows that contained images instead of data. The cleaned data feeds into Tableau dashboards and a Next.js frontend for live tracking.",
       pills: [
-        { label: "Descriptive",  sub: "what happened — sales trends",        color: "#378ADD" },
-        { label: "Diagnostic",   sub: "why — fee and margin breakdown",       color: "#EF9F27" },
-        { label: "Predictive",   sub: "what next — repricing signals",        color: "#1D9E75" },
-        { label: "Prescriptive", sub: "what to do — restock decisions",       color: "#534AB7" },
+        { label: "Descriptive",  sub: "Visualizes order volume by week, revenue by month, top selling cards, and geographic demand by state.",                                                                          color: "#378ADD" },
+        { label: "Diagnostic",   sub: "Breaks down profit and loss by product after platform fees, shipping costs, and supply expenses to identify which items are worth selling.",                                      color: "#EF9F27" },
+        { label: "Predictive",   sub: "Flags slow-moving inventory based on days since last sale and demand trends by card set.",                                                                                        color: "#534AB7" },
+        { label: "Prescriptive", sub: "Recommends which cards to restock and which shipping supply sizes to buy based on order volume and package weight patterns.",                                                     color: "#1D9E75" },
       ],
       results:
-        "458 orders tracked · $12,657 Q1 revenue · 50 states reached · 3 platforms compared",
+        "458 orders tracked across Q1 2026. $12,657 in revenue across 50 states. Clear visibility into which products to restock, which to markdown, and which shipping supplies to buy in bulk.",
     },
   },
   {
     title: "Toronto Airbnb Analysis",
     badge: { text: "Live", variant: "live" },
     description:
-      "Exploratory analysis of 18K+ listings across 140+ Toronto neighbourhoods using the public Inside Airbnb dataset, visualised in Tableau Public.",
+      "Analyzed 18K+ Airbnb listings across 140+ Toronto neighbourhoods to find the cheapest, most available, and highest rated areas for a trip. Built in Tableau Public using the Inside Airbnb dataset.",
     tags: ["Tableau", "Python", "Excel"],
     links: [
       { icon: <IconExternalLink />, label: "Tableau", href: "https://public.tableau.com/app/profile/tonylin3260/viz/TorontoAirbnbOverview/TorontoAirbnbOverview" },
@@ -119,6 +122,7 @@ const projects: ProjectData[] = [
     ],
     statLabel: "Inside Airbnb Dataset",
     ctaLabel: "View on Tableau Public ↗",
+    pageHref: "/projects/toronto-airbnb",
     modal: {
       problem:
         "Understanding how Airbnb pricing, occupancy, and host behaviour varies across Toronto neighbourhoods using publicly available Inside Airbnb data.",
@@ -136,7 +140,7 @@ const projects: ProjectData[] = [
     title: "NYC DOT Traffic Map",
     badge: { text: "Live", variant: "live" },
     description:
-      "Interactive map of 850+ NYC DOT traffic cameras across all 5 boroughs, built during the DOT internship to support field operations teams.",
+      "Built and maintained real-time operational reporting tools at NYC DOT tracking traffic counts, incidents, and speed enforcement across 850+ cameras citywide. Used in production across all 5 NYC boroughs.",
     tags: ["SQL", "Python", "Tableau"],
     links: [
       { icon: <IconExternalLink />, label: "Live app", href: "https://flowmap.nyctmc.org/polyline_editor/" },
@@ -149,6 +153,7 @@ const projects: ProjectData[] = [
     ],
     statLabel: "NYC DOT Internship",
     ctaLabel: "View live map ↗",
+    pageHref: "/projects/nyc-dot",
     modal: {
       problem:
         "NYC DOT needed a real-time way to monitor vehicle flow and congestion across all 5 boroughs to support field operations and citywide congestion response.",
@@ -302,16 +307,22 @@ function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () 
           <p className="font-body" style={{ fontSize: "10px", fontWeight: 600, color: "#444", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "10px" }}>
             Analytics Type
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
             {modal.pills.map((p) => (
               <div
                 key={p.label}
-                style={{ background: `${p.color}14`, border: `1px solid ${p.color}33`, borderRadius: "8px", padding: "5px 11px" }}
+                style={{
+                  background: `${p.color}1a`,
+                  borderTop: `2px solid ${p.color}`,
+                  borderLeft: "none", borderRight: "none", borderBottom: "none",
+                  borderRadius: "8px",
+                  padding: "10px 12px",
+                }}
               >
-                <span className="font-body" style={{ fontSize: "12px", fontWeight: 600, color: p.color, display: "block", lineHeight: 1.3 }}>
+                <span className="font-body" style={{ fontSize: "13px", fontWeight: 500, color: p.color, display: "block", marginBottom: "4px" }}>
                   {p.label}
                 </span>
-                <span className="font-body" style={{ fontSize: "10px", color: "#555" }}>
+                <span className="font-body" style={{ fontSize: "12px", color: "#666", lineHeight: 1.5 }}>
                   {p.sub}
                 </span>
               </div>
@@ -353,6 +364,7 @@ function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () 
 // ─── Full project card ────────────────────────────────────────────────────────
 
 function FullProjectCard({ project }: { project: ProjectData }) {
+  const router = useRouter();
   const [hovered, setHovered] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -363,17 +375,22 @@ function FullProjectCard({ project }: { project: ProjectData }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [modalOpen]);
 
+  const isClickable = project.pageHref || project.modal;
+
   return (
     <>
       <div
-        onClick={() => project.modal && setModalOpen(true)}
+        onClick={() => {
+          if (project.pageHref) router.push(project.pageHref);
+          else if (project.modal) setModalOpen(true);
+        }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{
           background: "#111113",
           borderRadius: "14px",
           padding: "18px",
-          cursor: project.modal ? "pointer" : "default",
+          cursor: isClickable ? "pointer" : "default",
           transform: hovered ? "translateY(-3px)" : "none",
           transition: "transform 200ms ease-out, border-color 200ms ease-out",
           ...cardBorders(hovered, project.accentColor),
@@ -389,43 +406,39 @@ function FullProjectCard({ project }: { project: ProjectData }) {
               </h3>
               <Badge text={project.badge.text} variant={project.badge.variant} />
             </div>
-            <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.6", marginBottom: "14px" }}>
+            <p className="font-body" style={{ fontSize: "13px", color: "#888", lineHeight: "1.6" }}>
               {project.description}
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-              {project.tags.map((tag) => <Tag key={tag} label={tag} />)}
-            </div>
           </div>
 
         </div>
 
-        {/* CTA pills */}
-        {project.modal && (
+        {/* CTA */}
+        {isClickable && (
           <div
-            style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "14px" }}
+            style={{ marginTop: "14px" }}
             onClick={(e) => e.stopPropagation()}
           >
-            {project.ctaLabel && (
+            {project.pageHref ? (
               <Link
-                href={project.links[0].href}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={project.pageHref}
                 className="inline-flex items-center font-body text-[12px] px-3 py-[5px] rounded-[8px] border border-[#2a2a2f] text-[#555] bg-transparent hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150"
               >
-                {project.ctaLabel}
+                Read the breakdown →
               </Link>
+            ) : (
+              <button
+                onClick={() => setModalOpen(true)}
+                className="inline-flex items-center font-body text-[12px] px-3 py-[5px] rounded-[8px] border border-[#2a2a2f] text-[#555] bg-transparent hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150 cursor-pointer"
+              >
+                Read the breakdown →
+              </button>
             )}
-            <button
-              onClick={() => setModalOpen(true)}
-              className="inline-flex items-center font-body text-[12px] px-3 py-[5px] rounded-[8px] border border-[#2a2a2f] text-[#555] bg-transparent hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150 cursor-pointer"
-            >
-              Read the breakdown →
-            </button>
           </div>
         )}
       </div>
 
-      {modalOpen && project.modal && (
+      {modalOpen && project.modal && !project.pageHref && (
         <ProjectModal project={project} onClose={() => setModalOpen(false)} />
       )}
     </>
@@ -436,7 +449,7 @@ function FullProjectCard({ project }: { project: ProjectData }) {
 
 export default function ProjectGrid() {
   return (
-    <section className="border-t border-border px-6 py-12 max-w-4xl mx-auto">
+    <section id="projects" className="border-t border-border px-6 py-12 max-w-4xl mx-auto">
       <ScrollReveal>
         <p className="font-body text-[11px] font-medium uppercase text-secondary tracking-[0.07em] mb-5">
           Projects

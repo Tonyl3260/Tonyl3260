@@ -37,6 +37,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${archivo.variable} ${spaceGrotesk.variable} scroll-smooth`}
+      data-scroll-behavior="smooth"
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ParallaxBackground />

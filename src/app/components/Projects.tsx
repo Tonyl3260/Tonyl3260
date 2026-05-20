@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // ─── Tag data ────────────────────────────────────────────────────────────────
 
@@ -14,6 +14,35 @@ type Filter = typeof FILTERS[number];
 function matches(tags: string[], filter: Filter) {
   return filter === "All" || tags.includes(filter);
 }
+
+// ─── Analytics type data ─────────────────────────────────────────────────────
+
+const ANALYTICS_TYPES = [
+  {
+    label: "Descriptive",
+    color: "#378ADD",
+    description:
+      "Visualizes order volume by week, revenue by month, top selling cards, and geographic demand by state.",
+  },
+  {
+    label: "Diagnostic",
+    color: "#EF9F27",
+    description:
+      "Breaks down profit and loss by product after platform fees, shipping costs, and supply expenses to identify which items are worth selling.",
+  },
+  {
+    label: "Predictive",
+    color: "#534AB7",
+    description:
+      "Flags slow-moving inventory based on days since last sale and demand trends by card set.",
+  },
+  {
+    label: "Prescriptive",
+    color: "#1D9E75",
+    description:
+      "Recommends which cards to restock and which shipping supply sizes to buy based on order volume and package weight patterns.",
+  },
+];
 
 // ─── SVG placeholders ────────────────────────────────────────────────────────
 
@@ -182,24 +211,184 @@ function AirbnbPlaceholder() {
   );
 }
 
+// ─── YnotCard Modal ───────────────────────────────────────────────────────────
+
+function YnotCardModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-[#0f0f13] border border-[#2a2a2f] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close */}
+        <button
+          onClick={onClose}
+          aria-label="Close modal"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-md text-[#666] hover:text-[#ccc] hover:bg-[#1a1a1d] transition-colors text-lg leading-none"
+        >
+          ✕
+        </button>
+
+        <div className="p-8">
+          {/* Header */}
+          <p className="font-body text-xs font-medium tracking-widest uppercase text-[#555] mb-2">
+            Featured Project
+          </p>
+          <h2 className="font-heading text-2xl font-semibold text-white mb-3">
+            YnotCard Dashboard
+          </h2>
+          <div className="flex flex-wrap gap-2 mb-8">
+            {YNOTCARD_TAGS.map((tag) => (
+              <span
+                key={tag}
+                className="font-body text-xs font-medium text-[#888] border border-[#2a2a2f] bg-[#1a1a1d] px-2.5 py-1 rounded-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <div className="space-y-8">
+            {/* THE PROBLEM */}
+            <section>
+              <h3 className="font-body text-[11px] font-semibold tracking-widest uppercase text-[#555] mb-3">
+                THE PROBLEM
+              </h3>
+              <p className="font-body text-sm text-[#aaa] leading-relaxed">
+                Running a TCG reselling business means hundreds of orders across multiple months
+                with no easy way to see how long inventory sits, what shipping supplies to reorder,
+                or whether a product is actually profitable after fees and shipping costs. TCGPlayer
+                does not export a clean month-to-month order sheet, so tracking anything required
+                piecing together data manually.
+              </p>
+            </section>
+
+            {/* THE APPROACH */}
+            <section>
+              <h3 className="font-body text-[11px] font-semibold tracking-widest uppercase text-[#555] mb-3">
+                THE APPROACH
+              </h3>
+              <p className="font-body text-sm text-[#aaa] leading-relaxed">
+                Built Python scripts to clean and combine raw TCGPlayer exports. The main challenges
+                were merging packing slip data across months, removing empty rows that TCGPlayer
+                includes by default, and cleaning the inventory sheet by stripping out columns like
+                Add Quantity and rows that contained images instead of data. The cleaned data feeds
+                into Tableau dashboards and a Next.js frontend for live tracking.
+              </p>
+            </section>
+
+            {/* ANALYTICS TYPE */}
+            <section>
+              <h3 className="font-body text-[11px] font-semibold tracking-widest uppercase text-[#555] mb-3">
+                ANALYTICS TYPE
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {ANALYTICS_TYPES.map(({ label, color, description }) => (
+                  <div
+                    key={label}
+                    style={{
+                      background: `${color}1a`,
+                      borderTop: `2px solid ${color}`,
+                    }}
+                    className="rounded-lg p-3"
+                  >
+                    <p
+                      style={{ color }}
+                      className="text-[13px] font-medium mb-1.5"
+                    >
+                      {label}
+                    </p>
+                    <p className="text-[12px] text-[#888] leading-relaxed">
+                      {description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* RESULTS */}
+            <section>
+              <h3 className="font-body text-[11px] font-semibold tracking-widest uppercase text-[#555] mb-3">
+                RESULTS
+              </h3>
+              <p className="font-body text-sm text-[#aaa] leading-relaxed">
+                458 orders tracked across Q1 2026. $12,657 in revenue across 50 states. Clear
+                visibility into which products to restock, which to markdown, and which shipping
+                supplies to buy in bulk.
+              </p>
+            </section>
+
+            {/* LINKS */}
+            <div className="flex flex-wrap gap-3 pt-1">
+              <a
+                href="https://ynotcard.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-[#1a1a1d] border border-[#2a2a2f] text-[#aaa] px-3 py-[5px] rounded-full text-[12px] font-body font-medium hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150"
+              >
+                Live app ↗
+              </a>
+              <a
+                href="https://github.com/Tonyl3260/ynotcard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-[#1a1a1d] border border-[#2a2a2f] text-[#aaa] px-3 py-[5px] rounded-full text-[12px] font-body font-medium hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                </svg>
+                GitHub
+              </a>
+              <a
+                href="https://public.tableau.com/app/profile/tonylin3260/viz/YnotCardTCGPlayerSalesAnalyticsJan-Apr2026/Dashboard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-[#1a1a1d] border border-[#2a2a2f] text-[#aaa] px-3 py-[5px] rounded-full text-[12px] font-body font-medium hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150"
+              >
+                Tableau ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Card wrapper ─────────────────────────────────────────────────────────────
 
 function CardShell({
   visible,
   href,
+  onOpen,
   children,
 }: {
   visible: boolean;
   href?: string;
+  onOpen?: () => void;
   children: React.ReactNode;
 }) {
+  const handleClick = onOpen ?? (href ? () => window.open(href, "_blank", "noopener,noreferrer") : undefined);
   return (
     <div
-      onClick={href ? () => window.open(href, "_blank", "noopener,noreferrer") : undefined}
+      onClick={handleClick}
       className={`rounded-xl border border-border overflow-hidden bg-white mt-6 first:mt-0
         hover:-translate-y-0.5 hover:shadow-md
         transition-all duration-200
-        ${href ? "cursor-pointer" : ""}
+        ${handleClick ? "cursor-pointer" : ""}
         ${visible ? "" : "hidden"}`}
     >
       {children}
@@ -211,6 +400,7 @@ function CardShell({
 
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const ynotVisible  = matches(YNOTCARD_TAGS, activeFilter);
   const airbnbVisible = matches(AIRBNB_TAGS,  activeFilter);
@@ -247,7 +437,7 @@ export default function Projects() {
       </div>
 
       {/* YnotCard */}
-      <CardShell visible={ynotVisible} href="https://ynotcard.vercel.app">
+      <CardShell visible={ynotVisible} onOpen={() => setModalOpen(true)}>
         <div className="relative border-b border-border bg-muted overflow-hidden">
           <DashboardPlaceholder />
           <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-white border border-border text-xs font-body font-medium text-secondary px-2.5 py-1 rounded-full shadow-sm">
@@ -263,10 +453,9 @@ export default function Projects() {
             YnotCard
           </h3>
           <p className="font-body text-base text-secondary leading-relaxed max-w-2xl mb-6">
-            A TCG card inventory tracker with Tableau sales dashboards. Track card
-            values across sets, analyze market trends, and visualize portfolio
-            performance built to put data analysis at the center of a collecting
-            hobby.
+            Full-stack analytics dashboard tracking TCGPlayer orders, inventory performance, and
+            shipping costs for a live TCG reselling business. 458 orders, $12,657 revenue, 50
+            states reached in 2026.
           </p>
           <div className="flex flex-wrap gap-2 mb-7">
             {YNOTCARD_TAGS.map((tag) => (
@@ -277,7 +466,7 @@ export default function Projects() {
           </div>
           <div className="flex flex-wrap gap-3" onClick={(e) => e.stopPropagation()}>
             <Link
-              href="https://ynotcard.vercel.app"
+              href="https://ynotcard.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-[5px] bg-[#1a1a1d] border border-[#2a2a2f] text-[#aaa] px-3 py-[5px] rounded-[8px] text-[12px] font-body font-medium hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -285,7 +474,7 @@ export default function Projects() {
               Live app ↗
             </Link>
             <Link
-              href="https://github.com/Tonyl3260"
+              href="https://github.com/Tonyl3260/ynotcard"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-[5px] bg-[#1a1a1d] border border-[#2a2a2f] text-[#aaa] px-3 py-[5px] rounded-[8px] text-[12px] font-body font-medium hover:border-[#378ADD] hover:text-[#378ADD] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -349,6 +538,9 @@ export default function Projects() {
       <p className="font-body text-sm text-secondary mt-8 text-center">
         More projects in progress — check back soon.
       </p>
+
+      {/* YnotCard detail modal */}
+      {modalOpen && <YnotCardModal onClose={() => setModalOpen(false)} />}
     </section>
   );
 }
